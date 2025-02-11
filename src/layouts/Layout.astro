@@ -8,7 +8,7 @@ const BaseTitle = "Studiokjplore";
 const { title } = Astro.props;
 
 const computed_title = (title?: string) => {
-  return title?.length ? `- ${title}`: "";
+  return title?.length ? `- ${title}` : "";
 };
 ---
 
