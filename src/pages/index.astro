@@ -1,11 +1,36 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
-	<Welcome />
+  <p>
+    Another website documented lore relate to
+    <a href="https://kamitsubaki.jp/">Kamitsubaki studio</a>.
+  </p>
+
+  <dl>
+    <div>
+      <dt>About</dt>
+      <dd><a href="/about/">link to About</a></dd>
+      <dd>About Page.</dd>
+    </div>
+
+    <div>
+      <dt>Setlist</dt>
+      <dd><a href="/setlist/">link to Setlist</a></dd>
+      <dd>Setlist Page.</dd>
+    </div>
+
+    <div>
+      <dt>Vault</dt>
+      <dd><a href="/vault/">link to Vault</a></dd>
+      <dd>A vault storing something, you might find something interesting inside.</dd>
+    </div>
+
+    <div>
+      <dt>Contact</dt>
+      <dd><a href="/contact/">link to Contact</a></dd>
+      <dd>Contact Page.</dd>
+    </div>
+  </dl>
 </Layout>

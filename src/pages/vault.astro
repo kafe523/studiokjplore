@@ -1,0 +1,62 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Item from "../components/vault/item.astro";
+
+import { getCollection } from "astro:content";
+
+const dump = await getCollection("dump");
+---
+
+<Layout title="Vault">
+  <section id="decryption">
+    <div>
+      <label for="decryption-key-title">Title Decryption Key:</label>
+      <input
+        type="password"
+        id="decryption-key-title"
+        required
+        autocomplete="off"
+      />
+      <button id="btn-key-clear-title">clear</button>
+    </div>
+    <div>
+      <label for="decryption-key-content">Content Decryption Key:</label>
+      <input
+        type="password"
+        id="decryption-key-content"
+        required
+        autocomplete="off"
+      />
+      <button id="btn-key-clear-content">clear</button>
+    </div>
+    <button id="btn-decrypt">Decrypt</button>
+    <button id="btn-reset">Reset</button>
+  </section>
+
+  <main>
+    <dl>
+      {
+        dump.map((v) => (
+          <Item n={v.data.n} c={v.data.c} ch={v.data.ch} s={v.data.s} />
+        ))
+      }
+    </dl>
+  </main>
+</Layout>
+
+<script>
+  import {
+    btnKeyClearTitle,
+    btnKeyClearContent,
+    decryptionKeyDomTitle,
+    decryptionKeyDomContent,
+  } from "../script/vault.ts";
+
+  btnKeyClearTitle.addEventListener("click", () => {
+    decryptionKeyDomTitle.value = "";
+  });
+
+  btnKeyClearContent.addEventListener("click", () => {
+    decryptionKeyDomContent.value = "";
+  });
+</script>

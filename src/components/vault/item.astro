@@ -1,0 +1,96 @@
+---
+interface Props {
+  n: string;
+  c: string;
+  ch: string;
+  s: string;
+}
+
+const { n, c, ch, s } = Astro.props;
+---
+
+<div class="dump-item">
+  <dt class="dump-item-title" data-n={n}>Encrypted</dt>
+  <dd class="dump-item-content" data-c={c} data-ch={ch} data-s={s}>Encrypted</dd>
+</div>
+
+<script>
+  import {
+    btnReset,
+    btnDecrypt,
+    dumpItems,
+    decryptionKeyDomTitle,
+    decryptionKeyDomContent,
+    Encrypted,
+    aesBufferDecryption,
+    arrayBufferToHex,
+    sha256BufferDigest,
+    sha256StringDigest,
+  } from "../../script/vault.ts";
+
+  btnDecrypt.addEventListener("click", async () => {
+    for (const item of dumpItems()) {
+      const itemTitle: HTMLDListElement =
+        item.querySelector(".dump-item-title")!;
+      const itemContent: HTMLDListElement =
+        item.querySelector(".dump-item-content")!;
+
+      const n = itemTitle.dataset.n!;
+      const c = itemContent.dataset.c!;
+      const ch = itemContent.dataset.ch!;
+      const s = itemContent.dataset.s!;
+
+      const titleBuffer = await aesBufferDecryption(
+        decryptionKeyDomTitle.value,
+        Uint8Array.from(window.atob(n), (char) => char.charCodeAt(0)).buffer,
+      );
+      const decryptedTitle =
+        titleBuffer !== null
+          ? new TextDecoder().decode(titleBuffer)
+          : "Title Decryption Fail";
+
+      itemTitle.innerText = decryptedTitle;
+
+      const contentBuffer = await aesBufferDecryption(
+        [decryptionKeyDomTitle.value, decryptionKeyDomContent.value].join(""),
+        Uint8Array.from(window.atob(c), (char) => char.charCodeAt(0)).buffer,
+      );
+
+      if (
+        titleBuffer === null ||
+        contentBuffer === null ||
+        arrayBufferToHex(
+          await sha256StringDigest(
+            arrayBufferToHex(await sha256BufferDigest(contentBuffer)) + s,
+          ),
+        ) !== ch
+      ) {
+        itemContent.innerText = Encrypted;
+        continue;
+      }
+
+      const f = new Blob([contentBuffer], {
+        type: "application/octet-stream",
+      });
+
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(f);
+      a.download = decryptedTitle;
+      a.innerText = "download";
+
+      itemContent.replaceChildren(a);
+    }
+  });
+
+  btnReset.addEventListener("click", () => {
+    dumpItems().forEach((n) => {
+      const currenNTitle: HTMLDListElement =
+        n.querySelector(".dump-item-title")!;
+      const currenNContent: HTMLDListElement =
+        n.querySelector(".dump-item-content")!;
+
+      currenNTitle.innerText = Encrypted;
+      currenNContent.innerText = Encrypted;
+    });
+  });
+</script>
