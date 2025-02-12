@@ -10,10 +10,12 @@
     "format": "prettier . --write"
   },
   "dependencies": {
+    "@astrojs/db": "^0.14.6",
     "astro": "^5.2.5"
   },
   "devDependencies": {
     "@std/csv": "npm:@jsr/std__csv",
+    "linkedom": "^0.18.9",
     "prettier": "^3.4.2",
     "prettier-plugin-astro": "^0.14.1"
   }
