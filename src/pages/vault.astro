@@ -1,6 +1,6 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Item from "../components/vault/item.astro";
+import Layout from "@layouts/Layout.astro";
+import Item from "@components/vault/item.astro";
 
 import { getCollection } from "astro:content";
 
@@ -50,7 +50,7 @@ const dump = await getCollection("dump");
     btnKeyClearContent,
     decryptionKeyDomTitle,
     decryptionKeyDomContent,
-  } from "../script/browser/vault.ts";
+  } from "@scripts/browser/vault.ts";
 
   btnKeyClearTitle.addEventListener("click", () => {
     decryptionKeyDomTitle.value = "";

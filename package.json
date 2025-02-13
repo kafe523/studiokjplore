@@ -17,6 +17,7 @@
     "@std/csv": "npm:@jsr/std__csv",
     "linkedom": "^0.18.9",
     "prettier": "^3.4.2",
-    "prettier-plugin-astro": "^0.14.1"
+    "prettier-plugin-astro": "^0.14.1",
+    "ulid": "^2.3.0"
   }
 }

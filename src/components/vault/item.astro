@@ -28,7 +28,7 @@ const { n, c, ch, s } = Astro.props;
     arrayBufferToHex,
     sha256BufferDigest,
     sha256StringDigest,
-  } from "../../script/browser/vault.ts";
+  } from "@scripts/browser/vault.ts";
 
   btnDecrypt.addEventListener("click", async () => {
     for (const item of dumpItems()) {
