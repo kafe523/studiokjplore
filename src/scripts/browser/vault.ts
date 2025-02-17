@@ -56,7 +56,7 @@ async function aesBufferDecryption(keyString: string, buffer: ArrayBuffer) {
       content,
     );
   } catch (e) {
-    console.info(e);
+    console.debug(e);
   }
 
   return result;

@@ -4,7 +4,7 @@ import Item from "@components/vault/item.astro";
 
 import { getCollection } from "astro:content";
 
-const dump = await getCollection("dump");
+const dump_2 = await getCollection("dump_2");
 ---
 
 <Layout title="Vault">
@@ -38,8 +38,8 @@ const dump = await getCollection("dump");
   <main>
     <dl>
       {
-        dump.map((v) => (
-          <Item n={v.data.n} c={v.data.c} ch={v.data.ch} s={v.data.s} />
+        dump_2.map((v) => (
+          <Item n={v.data.n} nh={v.data.nh} c={v.data.c} ch={v.data.ch} />
         ))
       }
     </dl>

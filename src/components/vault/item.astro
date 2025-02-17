@@ -1,19 +1,17 @@
 ---
 interface Props {
   n: string;
+  nh: string;
   c: string;
   ch: string;
-  s: string;
 }
 
-const { n, c, ch, s } = Astro.props;
+const { n, nh, c, ch } = Astro.props;
 ---
 
 <div class="dump-item">
-  <dt class="dump-item-title" data-n={n}>Encrypted</dt>
-  <dd class="dump-item-content" data-c={c} data-ch={ch} data-s={s}>
-    Encrypted
-  </dd>
+  <dt class="dump-item-title" data-n={n} data-nh={nh}>Encrypted</dt>
+  <dd class="dump-item-content" data-c={c} data-ch={ch}>Encrypted</dd>
 </div>
 
 <script>
@@ -30,6 +28,8 @@ const { n, c, ch, s } = Astro.props;
     sha256StringDigest,
   } from "@scripts/browser/vault.ts";
 
+  import { compareSync } from "bcryptjs";
+
   btnDecrypt.addEventListener("click", async () => {
     for (const item of dumpItems()) {
       const itemTitle: HTMLDListElement =
@@ -38,20 +38,25 @@ const { n, c, ch, s } = Astro.props;
         item.querySelector(".dump-item-content")!;
 
       const n = itemTitle.dataset.n!;
+      const nh = itemTitle.dataset.nh!;
       const c = itemContent.dataset.c!;
       const ch = itemContent.dataset.ch!;
-      const s = itemContent.dataset.s!;
 
       const titleBuffer = await aesBufferDecryption(
         decryptionKeyDomTitle.value,
         Uint8Array.from(window.atob(n), (char) => char.charCodeAt(0)).buffer,
       );
-      const decryptedTitle =
-        titleBuffer !== null
+
+      itemTitle.innerText =
+        titleBuffer !== null &&
+        compareSync(
+          arrayBufferToHex(
+            await sha256StringDigest(new TextDecoder().decode(titleBuffer)),
+          ),
+          nh,
+        )
           ? new TextDecoder().decode(titleBuffer)
           : "Title Decryption Fail";
-
-      itemTitle.innerText = decryptedTitle;
 
       const contentBuffer = await aesBufferDecryption(
         [decryptionKeyDomTitle.value, decryptionKeyDomContent.value].join(""),
@@ -61,11 +66,10 @@ const { n, c, ch, s } = Astro.props;
       if (
         titleBuffer === null ||
         contentBuffer === null ||
-        arrayBufferToHex(
-          await sha256StringDigest(
-            arrayBufferToHex(await sha256BufferDigest(contentBuffer)) + s,
-          ),
-        ) !== ch
+        !compareSync(
+          arrayBufferToHex(await sha256BufferDigest(contentBuffer)),
+          ch,
+        )
       ) {
         itemContent.innerText = Encrypted;
         continue;
@@ -77,7 +81,7 @@ const { n, c, ch, s } = Astro.props;
 
       const a = document.createElement("a");
       a.href = URL.createObjectURL(f);
-      a.download = decryptedTitle;
+      a.download = itemTitle.innerText;
       a.innerText = "download";
 
       itemContent.replaceChildren(a);
